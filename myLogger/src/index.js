@@ -1,4 +1,3 @@
-const http = require('http');
 const ServiceLogger = require('./loggerService.js');
 
 let config = {
@@ -6,42 +5,39 @@ let config = {
     initialized: false
 };
 
-http.createServer((req, res) => {
-    function init(options = {}) {
-            config = { ...config, ...options };
+function init(options = {}) {
+    config = { ...config, ...options };
 
-            if (config.isProd && config.apiKey) {
-                ServiceLogger.init(config.apiKey);
-            }
-            config.initialized = true;
+    if (config.isProd && config.apiKey) {
+        ServiceLogger.init(config.apiKey);
     }
+    config.initialized = true;
+}
 
-    const logger = {
-        log(...args) {
-            this._execLogs('log', args);
-        },
-        info(...args) {
-            this._execLogs('info', args);
-        },
-        warn(...args) {
-            this._execLogs('warn', args);
-        },
-        error(...args) {
-            this._execLogs('error', args);
-        },
+const logger = {
+    log(...args) {
+        this._execLogs('log', args);
+    },
+    info(...args) {
+        this._execLogs('info', args);
+    },
+    warn(...args) {
+        this._execLogs('warn', args);
+    },
+    error(...args) {
+        this._execLogs('error', args);
+    },
 
-        _execLogs(level, args) {
-            if (config.isProd) {
-                ServiceLogger[level](...args);
-            } else {
-                console[level](...args);
-            }
+    _execLogs(level, args) {
+        if (config.isProd) {
+            ServiceLogger[level](...args);
+        } else {
+            console[level](...args);
         }
     }
+}
 
-    module.exports = {
-        init,
-        ...logger
-    };
-
-}).listen(4200, () => console.log('logger service running on port 4200'));
+module.exports = {
+    init,
+    logger
+};
