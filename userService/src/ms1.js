@@ -1,5 +1,5 @@
 const http = require('http');
-const { init, logger } = require('../../myLogger/src/index.js');
+const { init, logger } = require('myLogger');
 
 http.createServer((req, res) => {
     let isProduction = process.env.NODE_ENV === 'production';

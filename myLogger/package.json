@@ -12,13 +12,7 @@
 		"type": "git",
 		"url": "git+https://github.com/ishoan/eko.git"
 	},
-	"keywords": [
-		"logger",
-		"logging",
-		"mylogger",
-		"eko"
-	],
-	"author": "ishoan <idanshoan@example.com>",
+	"author": "ishoan",
 	"license": "MIT",
 	"bugs": {
 		"url": "https://github.com/ishoan/eko/issues"
