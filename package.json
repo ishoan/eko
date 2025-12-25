@@ -8,11 +8,14 @@
     "test": "echo \"No tests specified\" && exit 0"
   },
   "workspaces": [
-        "myLogger",
-        "userService"
-    ],
+    "myLogger",
+    "userService"
+  ],
   "keywords": [],
   "author": "",
   "license": "MIT",
-  "private": true
+  "private": true,
+  "dependencies": {
+    "myLogger": "^0.1.0"
+  }
 }

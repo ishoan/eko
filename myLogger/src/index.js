@@ -1,5 +1,5 @@
 const http = require('http');
-const ServiceLogger = require('./loggerService');
+const ServiceLogger = require('./loggerService.js');
 
 let config = {
     isProd: process.env.NODE_ENV === 'production',
@@ -7,17 +7,16 @@ let config = {
 };
 
 http.createServer((req, res) => {
-
-    const logger = {
-        init(options = {}) {
+    function init(options = {}) {
             config = { ...config, ...options };
 
             if (config.isProd && config.apiKey) {
                 ServiceLogger.init(config.apiKey);
             }
             config.initialized = true;
-        },
+    }
 
+    const logger = {
         log(...args) {
             this._execLogs('log', args);
         },
@@ -39,9 +38,10 @@ http.createServer((req, res) => {
             }
         }
     }
-}).listen(4200, () => console.log('logger service running on port 4200'));
 
-module.exports = {
-    init,
-    ...logger
-}; 
+    module.exports = {
+        init,
+        ...logger
+    };
+
+}).listen(4200, () => console.log('logger service running on port 4200'));
