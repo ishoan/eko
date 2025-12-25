@@ -1,7 +1,7 @@
 const ServiceLogger = require('./loggerService.js');
 
 let config = {
-    isProd: process.env.NODE_ENV === 'production',
+    isProd: false,
     initialized: false
 };
 

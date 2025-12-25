@@ -3,7 +3,8 @@ const { init, logger } = require('../../myLogger/src/index.js');
 
 http.createServer((req, res) => {
     let isProduction = process.env.NODE_ENV === 'production';
-    init({ apiKey: 'USER_SERVICE_API_KEY', isProduction });
+    
+    init({ apiKey: 'USER_SERVICE_API_KEY', isProd: isProduction });
     
     // Log timestamp for each HTTP GET request and respond
     if (req.method === 'GET') {
@@ -13,20 +14,5 @@ http.createServer((req, res) => {
         res.end(`OK - ${ts}`);
         return;
     }
-    
-    class UserService {
-       processLogin(user) {
-            logger.info(`Processing login for user: ${user}`);
-            // Simulate login processing
-            try {
-                if (!user) {
-                    throw new Error('Invalid user');
-                }
-                logger.log(`User ${user} logged in successfully.`);
-            } catch (error) {
-                logger.error(`Login error for user ${user}:`, error);
-            }
-        } 
-    }
 
-}).listen(4201, () => console.log('user service running on port 4201'));
+}).listen(4201, () => console.log('env:', process.env.NODE_ENV));
