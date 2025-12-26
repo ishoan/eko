@@ -2,15 +2,24 @@ const ServiceLogger = require('./loggerService.js');
 
 let config = {
     isProd: false,
-    initialized: false
+    initialized: false,
+    apiKey: null
 };
 
 function init(options = {}) {
+    if (config.initialized) {
+        console.warn('Logger already initialized');
+        return;
+    }
+    
     config = { ...config, ...options };
 
     if (config.isProd && config.apiKey) {
         ServiceLogger.init(config.apiKey);
+    } else if (config.isProd && !config.apiKey) {
+        throw new Error('API key required for production mode');
     }
+    
     config.initialized = true;
 }
 
@@ -29,13 +38,17 @@ const logger = {
     },
 
     _execLogs(level, args) {
-        if (config.isProd) {
+        if (!config.initialized) {
+            console.warn('Logger not initialized, using console');
+        }
+        
+        if (config.isProd && config.apiKey) {
             ServiceLogger[level](...args);
         } else {
             console[level](...args);
         }
     }
-}
+};
 
 module.exports = {
     init,

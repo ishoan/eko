@@ -1,11 +1,11 @@
 const http = require('http');
 const { init, logger } = require('myLogger');
 
+let isProduction = process.env.NODE_ENV === 'production';
+init({ apiKey: 'USER_SERVICE_API_KEY', isProd: isProduction });
+
 http.createServer((req, res) => {
-    let isProduction = process.env.NODE_ENV === 'production';
-    
-    init({ apiKey: 'USER_SERVICE_API_KEY', isProd: isProduction });
-    
+
     // Log timestamp for each HTTP GET request and respond
     if (req.method === 'GET') {
         const ts = new Date().toISOString();
