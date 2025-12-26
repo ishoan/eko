@@ -2,21 +2,9 @@
 {
 	"name": "mylogger",
 	"version": "0.1.0",
-	"description": "Lightweight configurable logger for Node.js",
 	"main": "src/index.js",
-	"scripts": {
-		"test": "node test.js",
-		"start": "node test.js"
-	},
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/ishoan/eko.git"
-	},
+    "description": "Lightweight configurable logger for Node.js",
 	"author": "ishoan",
-	"license": "MIT",
-	"bugs": {
-		"url": "https://github.com/ishoan/eko/issues"
-	},
-	"homepage": "https://github.com/ishoan/eko#readme"
+	"license": "MIT"
 }
 
