@@ -1,5 +1,8 @@
 // 3rd Party Logging Service API 
 const ServiceLogger = {
+  /**
+ * @param {string} [options.apiKey] - API key required for production mode logging
+ **/
   init(apiKey) {
     // Configure the logging service with an API key
   },
