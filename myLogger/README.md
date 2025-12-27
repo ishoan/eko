@@ -1,68 +1,99 @@
-# myLogger
+# mylogger
 
-A tiny, configurable Node logger with log levels, optional prefixing, timestamps and colored console output.
+A small, opinionated logger for Node.js services.
 
-## Features
+This README explains how to install and use `mylogger` in your service. The package exposes a single configuration entrypoint and a `logger` object you can use like `console`.
 
-- Levels: `error`, `warn`, `info`, `debug` (increasing verbosity)
-- ISO timestamps on each message
-- Optional prefix for easier identification
-- Colored output for terminals
+---
 
-## Installation
+## Key points (short)
 
-Use the package locally or publish it to npm. From the repository root:
+- Exports: `{ init, logger }`
+- Call `init()` once at service startup to configure runtime behavior.
+- In development (default) logs go to `console`; in production logs are forwarded to a pluggable transport.
+- Logging methods accept multiple arguments and preserve values (objects, Errors, strings).
+
+---
+
+## Install
+
+Install locally for development (recommended when working in the same repo):
 
 ```bash
-cd myLogger
-# install dev deps if needed
-npm install
+# from your service folder (e.g. userService)
+npm install ../myLogger
 ```
+
+If the package is published, install from npm:
+
+```bash
+npm install mylogger
+```
+
+---
+
+## Important: call `init()` once at startup
+
+`init()` configures whether the logger runs in development or production mode and (in production) initializes the remote transport using an `apiKey`.
+
+Call it as early as possible in your main entrypoint:
+
+```js
+// index.js or server.js
+const { init, logger } = require('mylogger');
+
+init({
+  isProd: process.env.NODE_ENV === 'production',
+  apiKey: process.env.MYLOGGER_API_KEY // required if isProd is true
+});
+
+// now safe to use logger throughout the app
+logger.info('Service started');
+```
+
+If you omit `init()`, `mylogger` will warn and fall back to `console` (non-fatal). However, in production `init()` enforces the presence of `apiKey` and will throw if `isProd=true` but no `apiKey` is provided.
+
+---
 
 ## Usage
 
-Create a logger and call its methods:
-
 ```js
-const { createLogger } = require('./index');
+const { init, logger } = require('mylogger');
 
-const log = createLogger({ level: 'debug', prefix: 'app' });
+// configure once at startup
+init({ isProd: false }); // dev mode example
 
-log.info('Server started on port', 3000);
-log.debug('Config', { env: 'development' });
-log.warn('Cache miss for key', 'user:1');
-log.error('Failed to connect', new Error('db'));
+// use like console — multi-arg support
+logger.info('Server listening on', 3000);
+logger.warn('Cache miss for', { key: 'user:1' });
+logger.error('Failed to load', new Error('db'));
 ```
 
-Alternatively, import the `MyLogger` class to customize behavior:
+### API
 
-```js
-const { MyLogger } = require('./index');
-const logger = new MyLogger({ level: 'info', prefix: 'svc' });
-logger.info('hello');
-```
+- `init(options)`
+  - `options.isProd` (boolean) — when `true`, logs are forwarded to the production transport.
+  - `options.apiKey` (string) — required when `isProd` is `true`.
+- `logger` object with methods: `log`, `info`, `warn`, `error` — all accept `(...args)`.
 
-## API
+---
 
-- `createLogger(opts)` — returns a logger instance. `opts` may include:
-  - `level` (string): one of `error`, `warn`, `info`, `debug` (default: `info`)
-  - `prefix` (string): optional prefix displayed before messages
-- Logger methods: `error(...args)`, `warn(...args)`, `info(...args)`, `debug(...args)`.
+## Production notes
 
-Messages are printed to the console (stdout) with an ISO timestamp and colored by level.
+- When configured with `isProd: true` and a valid `apiKey`, `mylogger` initializes the adapter at `src/loggerService.js` and forwards logs there.
+- If the remote transport fails at runtime, `mylogger` logs a warning about the failure and falls back to `console[level](...args)` so the original message is still emitted instead of crashing the host process.
+- The provided `src/loggerService.js` is a small stub. Replace or extend it to integrate with your real logging backend (HTTP, gRPC, etc.). Prefer non-blocking async transports and handle failures internally.
 
-## Example test
+---
 
-Run the included demo:
+## Development tips
+
+- To install the package into a local consumer while developing:
 
 ```bash
-node test.js
+# from the consumer folder
+npm install ../myLogger
+# or use npm link for a symlink workflow
+cd ../myLogger && npm link && cd ../your-consumer && npm link mylogger
 ```
-
-## Notes
-
-- This logger is intentionally minimal — for advanced features (structured logging, transports, async writes) consider using a more feature-rich library or extending this one.
-
-## License
-
-MIT
+---
