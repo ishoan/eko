@@ -2,8 +2,9 @@ const http = require('http');
 const { init, logger } = require('myLogger');
 
 // Initialize logger based on environment and API key when the service starts
-let isProduction = process.env.NODE_ENV === 'production';
-init({ apiKey: 'USER_SERVICE_API_KEY', isProd: isProduction });
+const isProduction = process.env.NODE_ENV === 'production';
+const loggerOptions = { apiKey: 'USER_SERVICE_API_KEY', isProd: isProduction };
+init(loggerOptions);
 
 http.createServer((req, res) => {
 
