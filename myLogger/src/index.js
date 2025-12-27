@@ -58,7 +58,11 @@ const logger = {
         }
         // Depending on environment, log to service or console
         if (config.isProd && config.apiKey) {
-            ServiceLogger[level](...args);
+            try {
+                ServiceLogger[level](...args);
+            } catch (e) {
+                console.error('Logging service error:', e);
+            }
         } else {
             console[level](...args);
         }
