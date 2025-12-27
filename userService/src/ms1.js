@@ -1,5 +1,5 @@
 const http = require('http');
-const { init, logger } = require('myLogger');
+const { init, logger } = require('mylogger');
 
 // Initialize logger based on environment and API key when the service starts
 const isProduction = process.env.NODE_ENV === 'production';
