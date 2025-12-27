@@ -40,6 +40,7 @@ function _dispatchLog(level, args) {
     // warn if not initialized
     if (!settings.initialized) {
         console.warn('Logger not initialized, using console');
+        init();
     }
     // Depending on environment, log to service or console
     if (settings.isProd && settings.apiKey) {
